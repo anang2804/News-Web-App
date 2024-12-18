@@ -58,13 +58,13 @@ function Navbar() {
 
             <li className="nav-item">
               <NavLink
-                to="/covid19"
+                to="/tiktok"
                 className="nav-link"
                 style={({ isActive }) => ({
                   color: isActive ? "yellow" : "white",
                 })}
               >
-                Covid19
+                Tiktok
               </NavLink>
             </li>
 
@@ -87,7 +87,7 @@ function Navbar() {
                   className="form-control"
                   placeholder="Cari Berita..."
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)} // Update state query
+                  onChange={(e) => setQuery(e.target.value)}
                 />
                 <button type="submit" className="btn btn-outline-light ms-2">
                   <i className="bi bi-search"></i> Cari

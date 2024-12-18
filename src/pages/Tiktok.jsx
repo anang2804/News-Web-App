@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { saveArticle } from "../store/redux/action/savedActions";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { saveArticle, unsaveArticle } from "../store/redux/action/savedActions";
 
-function Programming() {
+function Tiktok() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,20 +11,15 @@ function Programming() {
   const dispatch = useDispatch();
   const savedArticles = useSelector((state) => state.savedArticles || []);
 
+  // API Key dan URL dasar untuk permintaan data
   const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
   const BASE_URL = `https://api.nytimes.com/svc/search/v2/articlesearch.json`;
 
-  // Fungsi untuk menyimpan artikel
-  const handleSave = (article) => {
-    dispatch(saveArticle(article));
-  };
-
+  // Mengambil artikel "Covid19" dari API saat komponen dimuat
   useEffect(() => {
-    const fetchProgrammingNews = async () => {
+    const fetchArticles = async () => {
       try {
-        const response = await fetch(
-          `${BASE_URL}?q=Programming&api-key=${API_KEY}`
-        );
+        const response = await fetch(`${BASE_URL}?q=tiktok&api-key=${API_KEY}`);
         if (!response.ok) {
           throw new Error("Gagal mengambil data dari API.");
         }
@@ -38,9 +33,10 @@ function Programming() {
       }
     };
 
-    fetchProgrammingNews();
+    fetchArticles();
   }, [API_KEY]);
 
+  // Handle loading state
   if (loading) {
     return (
       <div className="text-center mt-5">
@@ -49,6 +45,7 @@ function Programming() {
     );
   }
 
+  // Handle error state
   if (error) {
     return (
       <div className="text-center mt-5 text-danger">
@@ -67,7 +64,7 @@ function Programming() {
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center text-primary mb-4">Programming News</h1>
+      <h1 className="text-center text-primary mb-4">Tiktok News</h1>
       <div className="row">
         {articles.map((article) => {
           const isSaved = savedArticles.some(
@@ -94,6 +91,7 @@ function Programming() {
                   <p className="card-text text-muted">
                     {article.abstract || "No description available."}
                   </p>
+
                   <div className="mt-auto">
                     <a
                       href={article.web_url}
@@ -103,13 +101,18 @@ function Programming() {
                     >
                       Read More
                     </a>
+
                     <button
                       className={`btn ${
                         isSaved ? "btn-danger" : "btn-success"
                       } btn-sm ms-2`}
-                      onClick={() => handleSave(article)}
+                      onClick={() =>
+                        isSaved
+                          ? dispatch(unsaveArticle(article))
+                          : dispatch(saveArticle(article))
+                      }
                     >
-                      {isSaved ? "Saved" : "Save"}
+                      {isSaved ? "Unsave" : "Save"}
                     </button>
                   </div>
                 </div>
@@ -122,4 +125,4 @@ function Programming() {
   );
 }
 
-export default Programming;
+export default Tiktok;

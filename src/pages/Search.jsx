@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { saveArticle, unsaveArticle } from "../store/redux/action/savedActions";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function Search() {
-  const { keyword } = useParams(); // Ambil keyword dari URL
+  const { keyword } = useParams();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const dispatch = useDispatch();
+  const savedArticles = useSelector((state) => state.savedArticles || []);
 
   const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
   const BASE_URL = `https://api.nytimes.com/svc/search/v2/articlesearch.json`;
@@ -64,42 +69,58 @@ function Search() {
         Hasil Pencarian: {keyword}
       </h1>
       <div className="row">
-        {articles.map((article) => (
-          <div key={article.url} className="col-md-4 mb-4">
-            <div className="card border rounded shadow-sm h-100">
-              <img
-                src={
-                  article.multimedia && article.multimedia.length > 0
-                    ? `https://www.nytimes.com/${article.multimedia[0].url}`
-                    : "https://via.placeholder.com/200"
-                }
-                className="card-img-top"
-                alt={article.title || "News Image"}
-                style={{ height: "200px", objectFit: "cover" }}
-              />
-              <div className="card-body d-flex flex-column">
-                <h5 className="card-title text-truncate">{article.title}</h5>
-                <p className="card-text text-muted">
-                  {article.abstract || "No description available."}
-                </p>
-                <div className="mt-auto">
-                  <a
-                    href={article.url}
-                    className="btn btn-outline-primary btn-sm"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Read More
-                  </a>
-                  {/* Tombol Save tanpa fungsi */}
-                  <button className="btn btn-secondary btn-sm ms-2" disabled>
-                    Save
-                  </button>
+        {articles.map((article) => {
+          const isSaved = savedArticles.some(
+            (saved) => saved.web_url === article.web_url
+          );
+
+          return (
+            <div key={article.web_url} className="col-md-4 mb-4">
+              <div className="card border rounded shadow-sm h-100">
+                <img
+                  src={
+                    article.multimedia && article.multimedia.length > 0
+                      ? `https://www.nytimes.com/${article.multimedia[0].url}`
+                      : "https://via.placeholder.com/200"
+                  }
+                  className="card-img-top"
+                  alt={article.headline?.main || "News Image"}
+                  style={{ height: "200px", objectFit: "cover" }}
+                />
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title text-truncate">
+                    {article.headline?.main || "Judul Tidak Tersedia"}
+                  </h5>
+                  <p className="card-text text-muted">
+                    {article.abstract || "No description available."}
+                  </p>
+                  <div className="mt-auto">
+                    <a
+                      href={article.web_url}
+                      className="btn btn-outline-primary btn-sm"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Read More
+                    </a>
+                    <button
+                      className={`btn ${
+                        isSaved ? "btn-danger" : "btn-success"
+                      } btn-sm ms-2`}
+                      onClick={() =>
+                        isSaved
+                          ? dispatch(unsaveArticle(article))
+                          : dispatch(saveArticle(article))
+                      }
+                    >
+                      {isSaved ? "Unsave" : "Save"}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
