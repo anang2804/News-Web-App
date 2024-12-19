@@ -14,10 +14,10 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-      <div className="container-fluid">
-        <NavLink className="navbar-brand fs-3" to="/">
-          <i className="bi bi-newspaper"></i> Kumpulan Berita
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+      <div className="container">
+        <NavLink className="navbar-brand fw-bold text-primary" to="/">
+          BeritaKu
         </NavLink>
         <button
           className="navbar-toggler"
@@ -37,64 +37,62 @@ function Navbar() {
                 to="/"
                 className="nav-link"
                 style={({ isActive }) => ({
-                  color: isActive ? "yellow" : "white",
+                  fontWeight: isActive ? "bold" : "normal",
+                  color: isActive ? "#007bff" : "#6c757d",
                 })}
               >
                 Indonesia
               </NavLink>
             </li>
-
             <li className="nav-item">
               <NavLink
                 to="/programming"
                 className="nav-link"
                 style={({ isActive }) => ({
-                  color: isActive ? "yellow" : "white",
+                  fontWeight: isActive ? "bold" : "normal",
+                  color: isActive ? "#007bff" : "#6c757d",
                 })}
               >
                 Programming
               </NavLink>
             </li>
-
             <li className="nav-item">
               <NavLink
                 to="/tiktok"
                 className="nav-link"
                 style={({ isActive }) => ({
-                  color: isActive ? "yellow" : "white",
+                  fontWeight: isActive ? "bold" : "normal",
+                  color: isActive ? "#007bff" : "#6c757d",
                 })}
               >
                 Tiktok
               </NavLink>
             </li>
-
             <li className="nav-item">
               <NavLink
                 to="/saved"
                 className="nav-link"
                 style={({ isActive }) => ({
-                  color: isActive ? "yellow" : "white",
+                  fontWeight: isActive ? "bold" : "normal",
+                  color: isActive ? "#007bff" : "#6c757d",
                 })}
               >
                 Saved
               </NavLink>
             </li>
-
-            <li className="nav-item">
-              <form className="d-flex ms-3" onSubmit={handleSearch}>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Cari Berita..."
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-                <button type="submit" className="btn btn-outline-light ms-2">
-                  <i className="bi bi-search"></i> Cari
-                </button>
-              </form>
-            </li>
           </ul>
+          <form className="d-flex ms-lg-3" onSubmit={handleSearch}>
+            <input
+              type="text"
+              className="form-control form-control-sm me-2"
+              placeholder="Cari berita..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button type="submit" className="btn btn-primary btn-sm">
+              Cari
+            </button>
+          </form>
         </div>
       </div>
     </nav>

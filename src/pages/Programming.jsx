@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { saveArticle } from "../store/redux/action/savedActions";
+import axios from "axios";
+import { saveArticle, unsaveArticle } from "../store/redux/action/savedActions";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function Programming() {
@@ -14,22 +15,25 @@ function Programming() {
   const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
   const BASE_URL = `https://api.nytimes.com/svc/search/v2/articlesearch.json`;
 
-  // Fungsi untuk menyimpan artikel
   const handleSave = (article) => {
     dispatch(saveArticle(article));
   };
 
+  const handleUnsave = (article) => {
+    dispatch(unsaveArticle(article));
+  };
+
   useEffect(() => {
     const fetchProgrammingNews = async () => {
+      setLoading(true);
       try {
-        const response = await fetch(
-          `${BASE_URL}?q=Programming&api-key=${API_KEY}`
-        );
-        if (!response.ok) {
-          throw new Error("Gagal mengambil data dari API.");
-        }
-        const data = await response.json();
-        setArticles(data.response.docs);
+        const response = await axios.get(BASE_URL, {
+          params: {
+            q: "Programming",
+            "api-key": API_KEY,
+          },
+        });
+        setArticles(response.data.response.docs);
       } catch (err) {
         console.error(err.message);
         setError(err.message);
@@ -53,14 +57,6 @@ function Programming() {
     return (
       <div className="text-center mt-5 text-danger">
         <p>{error}</p>
-      </div>
-    );
-  }
-
-  if (articles.length === 0) {
-    return (
-      <div className="text-center mt-5">
-        <p>Tidak ada artikel untuk ditampilkan.</p>
       </div>
     );
   }
@@ -107,9 +103,11 @@ function Programming() {
                       className={`btn ${
                         isSaved ? "btn-danger" : "btn-success"
                       } btn-sm ms-2`}
-                      onClick={() => handleSave(article)}
+                      onClick={() =>
+                        isSaved ? handleUnsave(article) : handleSave(article)
+                      }
                     >
-                      {isSaved ? "Saved" : "Save"}
+                      {isSaved ? "Unsave" : "Save"}
                     </button>
                   </div>
                 </div>
